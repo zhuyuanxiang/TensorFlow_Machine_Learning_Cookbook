@@ -55,6 +55,9 @@ ops.reset_default_graph()
 sess = tf.Session()
 
 # Generate non-linear data
+# 数据量和批量数据个数会影响最终判断的效果
+# 如果数据量与批量数据个数相等，那么不在聚焦区内的数据默认使用外面那个圈的值（-1）
+# 如果数据量大于批量数据个数，那么不在聚焦区内的数据默认使用里面那个圈的值（1）
 (x_vals, y_vals) = datasets.make_circles(n_samples = 350, factor = .5, noise = .1)
 y_vals = np.array([1 if y == 1 else -1 for y in y_vals])
 class1_x = [x[0] for i, x in enumerate(x_vals) if y_vals[i] == 1]
@@ -63,7 +66,7 @@ class2_x = [x[0] for i, x in enumerate(x_vals) if y_vals[i] == -1]
 class2_y = [x[1] for i, x in enumerate(x_vals) if y_vals[i] == -1]
 
 # Declare batch size
-batch_size = 50 # 350
+batch_size = 50
 learning_rate = 0.002
 iterations = 1500
 
@@ -77,8 +80,7 @@ prediction_grid = tf.placeholder(shape = [None, 2], dtype = tf.float32)
 b = tf.Variable(tf.random_normal(shape = [1, batch_size]))
 
 # Apply kernel
-# Linear Kernel
-# my_kernel = tf.matmul(x_data, tf.transpose(x_data))
+# 线性核没有高斯核的精确度好。
 
 # Gaussian (RBF) kernel
 gamma = tf.constant(-50.0)
@@ -92,6 +94,9 @@ sq_dists = tf.add(tf.subtract(dist, data_dist), tf.transpose(dist))
 # exp{-gamma*||x-y||^2}
 my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
 
+# Linear Kernel
+# my_kernel = tf.matmul(x_data, tf.transpose(x_data))
+
 # Compute SVM model
 model_output = tf.matmul(b, my_kernel)
 first_term = tf.reduce_sum(b)
@@ -101,15 +106,15 @@ second_term = tf.reduce_sum(tf.multiply(my_kernel, tf.multiply(b_vec_cross, y_ta
 loss = tf.negative(tf.subtract(first_term, second_term))
 
 # Create Prediction Kernel
-# Linear Prediction Kernel
-# my_kernel=tf.matmul(x_data,tf.transpose(prediction_grid))
-
 # Gaussian(RBF) prediction kernel
 rA = tf.reshape(tf.reduce_sum(tf.square(x_data), 1), [-1, 1])
 rB = tf.reshape(tf.reduce_sum(tf.square(prediction_grid), 1), [-1, 1])
 pred_dist = tf.multiply(2., tf.matmul(x_data, tf.transpose(prediction_grid)))
 pred_sq_dist = tf.add(tf.subtract(rA, pred_dist), tf.transpose(rB))
 pred_kernel = tf.exp(tf.multiply(gamma, tf.abs(pred_sq_dist)))
+
+# Linear Prediction Kernel
+# my_kernel = tf.matmul(x_data, tf.transpose(prediction_grid))
 
 prediction_output = tf.matmul(tf.multiply(tf.transpose(y_target), b), pred_kernel)
 prediction = tf.sign(prediction_output - tf.reduce_mean(prediction_output))
@@ -137,14 +142,17 @@ for i in range(iterations):
     temp_loss = sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})
     loss_vec.append(temp_loss)
 
-    temp_acc = sess.run(accuracy, feed_dict = {x_data: rand_x, y_target: rand_y, prediction_grid: rand_x})
+    temp_acc = sess.run(accuracy, feed_dict = {
+            x_data: rand_x, y_target: rand_y, prediction_grid: rand_x
+    })
     batch_accuracy.append(temp_acc)
 
-    # if (i + 1) % 250 == 0:
-    #     print("Step #", i + 1)
-    #     print("Loss = ", temp_loss)
-    #     pass
-    # pass
+    if (i + 1) % 250 == 0:
+        print("Step #", i + 1)
+        print("Loss = ", temp_loss)
+        print("Accuracy = ", temp_acc)
+        pass
+    pass
 
 # Create a mesh to plot points in
 x_min, x_max = x_vals[:, 0].min() - 1, x_vals[:, 0].max() + 1
@@ -160,6 +168,14 @@ grid_predictions = sess.run(
         prediction, feed_dict = {
                 x_data: rand_x, y_target: rand_y, prediction_grid: grid_points
         }).reshape(xx.shape)
+# print("xx =",xx[:20])
+# print("yy =",yy[:20])
+# print("grid_points =")
+# print(grid_points)
+# print("rand_x =",rand_x[:20])
+# print("rand_y =",rand_y[:20])
+# print("grid_predictions = ")
+# print(grid_predictions[:10])
 
 # Plot points and grid
 plt.figure()
@@ -191,12 +207,19 @@ plt.ylabel("损失代价")
 # Evaluate on new/unseen data points
 # New data points:
 new_points = np.array([(-0.75, -0.75), (-0.5, -0.5), (-0.25, -0.25), (0.25, 0.25), (0.5, 0.5), (0.75, 0.75)])
-# [evaluations] = sess.run(
-#         prediction, feed_dict = {x_data: x_vals, y_target: np.transpose([y_vals]), prediction_grid: new_points})
-#
-# for ix, p in enumerate(new_points):
-#     print('{} : class = {}'.format(p, evaluations[ix]))
-#     pass
+new_points = np.array(
+        [[0.1751517, - 0.2138658], [0.1951517, - 0.2138658], [0.2151517, - 0.2138658], [0.2351517, - 0.2138658],
+         [0.2551517, - 0.2138658], [0.2751517, - 0.2138658], [0.2951517, - 0.2138658], [0.3151517, - 0.2138658],
+         [0.3351517, - 0.2138658], [0.3551517, - 0.2138658], [0.3751517, - 0.2138658], [0.3951517, - 0.2138658],
+         [0.4151517, - 0.2138658], [0.4351517, - 0.2138658], [0.4551517, - 0.2138658], ])
+[evaluations] = sess.run(
+        prediction, feed_dict = {
+                x_data: rand_x, y_target: rand_y, prediction_grid: new_points
+        })
+
+for ix, p in enumerate(new_points):
+    print('{} : class = {}'.format(p, evaluations[ix]))
+pass
 
 # gamma = tf.constant(-50.0)
 # dist = tf.reshape(tf.reduce_sum(tf.square(x_data), 1), [-1, 1])

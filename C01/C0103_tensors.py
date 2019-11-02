@@ -13,50 +13,30 @@
 @Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0103，P3
 @Desc       :   TensorFlow 基础，张量
 """
-# Common imports
-import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
-import pandas as pd
-
-# 设置数据显示的精确度为小数点后3位
-np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
-
-# to make this notebook's output stable across runs
-np.random.seed(42)
-
-# To plot pretty figures
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-mpl.rc('axes', labelsize = 14)
-mpl.rc('xtick', labelsize = 12)
-mpl.rc('ytick', labelsize = 12)
-
 import os
 import sys
 import sklearn
+import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.python.framework import ops
+from tools import show_values
 
-# 初始化默认的计算图
-ops.reset_default_graph()
+# 设置数据显示的精确度为小数点后3位
+np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
+# to make this notebook's output stable across runs
+np.random.seed(42)
+
 # Python ≥3.5 is required
 assert sys.version_info >= (3, 5)
 # Scikit-Learn ≥0.20 is required
 assert sklearn.__version__ >= "0.20"
 # 屏蔽警告：Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# 初始化默认的计算图
+ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
-
-
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    print(session.run(variable, feed_dict = feed_dict))
-    pass
 
 
 # 1.3 声明张量

@@ -10,25 +10,22 @@
 @Version    :   v0.1
 @Time       :   2019-11-01 16:38
 @License    :   (C)Copyright 2018-2019, zYx.Tom
-@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec04，P
-@Desc       :   基于 TensorFlow 的线性回归，
+@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0404，P77
+@Desc       :   基于 TensorFlow 的线性回归，使用 TensorFlow 实现 基于核函数的支持向量机
 """
-# Common imports
-import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
-import pandas as pd
-
-# 设置数据显示的精确度为小数点后7位
-np.set_printoptions(precision = 7, suppress = True, threshold = np.inf, linewidth = 200)
-# to make this notebook's output stable across runs
-np.random.seed(42)
-
 import os
 import sys
 import sklearn
-import matplotlib.pyplot as plt
-from sklearn import datasets
+import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.python.framework import ops
+from tools import show_values
+
+# 设置数据显示的精确度为小数点后3位
+np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
+# to make this notebook's output stable across runs
+np.random.seed(42)
 
 # Python ≥3.5 is required
 assert sys.version_info >= (3, 5)
@@ -36,29 +33,18 @@ assert sys.version_info >= (3, 5)
 assert sklearn.__version__ >= "0.20"
 # 屏蔽警告：Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-
-def show_values(var_name, variable, feed_dict = None, session = None):
-    if session is None:
-        session = tf.Session()
-    print('-' * 50)
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
-
-
 # 初始化默认的计算图
 ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
 
+# 从这一节开始，主要难点在于高斯核函数推导过程的实现。
+
 # Generate non-linear data
 # 数据量和批量数据个数会影响最终判断的效果
 # 如果数据量与批量数据个数相等，那么不在聚焦区内的数据默认使用外面那个圈的值（-1）
 # 如果数据量大于批量数据个数，那么不在聚焦区内的数据默认使用里面那个圈的值（1）
-(x_vals, y_vals) = datasets.make_circles(n_samples = 350, factor = .5, noise = .1)
+(x_vals, y_vals) = sklearn.datasets.make_circles(n_samples = 350, factor = .5, noise = .1)
 y_vals = np.array([1 if y == 1 else -1 for y in y_vals])
 class1_x = [x[0] for i, x in enumerate(x_vals) if y_vals[i] == 1]
 class1_y = [x[1] for i, x in enumerate(x_vals) if y_vals[i] == 1]
@@ -179,7 +165,7 @@ grid_predictions = sess.run(
 
 # Plot points and grid
 plt.figure()
-plt.contourf(xx, yy, grid_predictions, alpha = 0.8)
+plt.contourf(xx, yy, grid_predictions, cmap = plt.cm.Paired,alpha = 0.8)
 plt.plot(class1_x, class1_y, 'ro', label = "Class 1")
 plt.plot(class2_x, class2_y, 'bx', label = "Class -1")
 plt.title("图4-8：使用非线性的高斯核函数 SVM 在非线性可分的数据集上进行分割")
@@ -226,7 +212,7 @@ pass
 # data_dist = tf.multiply(2., tf.matmul(x_data, tf.transpose(x_data)))
 # sq_dists = tf.add(tf.subtract(dist, data_dist), tf.transpose(dist))
 # my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
-# show_values("dist", dist,feed_dict = {x_data: rand_x})
+show_values("dist", dist,feed_dict = {x_data: rand_x})
 # show_values("data_dist", data_dist,feed_dict = {x_data: rand_x})
 # show_values("tf.subtract(dist, data_dist)", tf.subtract(dist, data_dist),feed_dict = {x_data: rand_x})
 # show_values("sq_dists", sq_dists,feed_dict = {x_data: rand_x})

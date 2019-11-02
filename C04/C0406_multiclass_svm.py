@@ -6,12 +6,12 @@
 ---------------------------
 @Software   :   PyCharm
 @Project    :   TensorFlow_Machine_Learning_Cookbook
-@File       :   C0405_nonlinear_svm.py
+@File       :   C0406_multiclass_svm.py
 @Version    :   v0.1
-@Time       :   2019-11-02 11:07
+@Time       :   2019-11-02 11:24
 @License    :   (C)Copyright 2018-2019, zYx.Tom
-@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0405，P82
-@Desc       :   基于 TensorFlow 的线性回归，使用 TensorFlow 实现 非线性支持向量机
+@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0406，P85
+@Desc       :   基于 TensorFlow 的线性回归，使用 TensorFlow 实现多类支持向量机
 """
 import os
 import sys
@@ -38,32 +38,34 @@ ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
 
-# 与上一节一样，同样是使用高斯核函数实现非线性支持向量机，区别在于对真实的数据进行分类
 # Load the data
 # iris.data = [(Sepal Length, Sepal Width, Petal Length, Petal Width)]
-iris = sklearn.datasets.load_iris()
+iris = datasets.load_iris()
 x_vals = np.array([[x[0], x[3]] for x in iris.data])
-y_vals = np.array([1 if y == 0 else -1 for y in iris.target])
-class1_x = [x[0] for i, x in enumerate(x_vals) if y_vals[i] == 1]
-class1_y = [x[1] for i, x in enumerate(x_vals) if y_vals[i] == 1]
-class2_x = [x[0] for i, x in enumerate(x_vals) if y_vals[i] == -1]
-class2_y = [x[1] for i, x in enumerate(x_vals) if y_vals[i] == -1]
+y_vals1 = np.array([1 if y == 0 else -1 for y in iris.target])
+y_vals2 = np.array([1 if y == 1 else -1 for y in iris.target])
+y_vals3 = np.array([1 if y == 2 else -1 for y in iris.target])
+y_vals = np.array([y_vals1, y_vals2, y_vals3])
+class1_x = [x[0] for i, x in enumerate(x_vals) if iris.target[i] == 0]
+class1_y = [x[1] for i, x in enumerate(x_vals) if iris.target[i] == 0]
+class2_x = [x[0] for i, x in enumerate(x_vals) if iris.target[i] == 1]
+class2_y = [x[1] for i, x in enumerate(x_vals) if iris.target[i] == 1]
+class3_x = [x[0] for i, x in enumerate(x_vals) if iris.target[i] == 2]
+class3_y = [x[1] for i, x in enumerate(x_vals) if iris.target[i] == 2]
 
 # Declare batch size
-batch_size = 150
+batch_size = 50
 
 # Initialize placeholders
 x_data = tf.placeholder(shape = [None, 2], dtype = tf.float32)
-y_target = tf.placeholder(shape = [None, 1], dtype = tf.float32)
+y_target = tf.placeholder(shape = [3, None], dtype = tf.float32)
 prediction_grid = tf.placeholder(shape = [None, 2], dtype = tf.float32)
 
 # Create variables for svm
-b = tf.Variable(tf.random_normal(shape = [1, batch_size]))
+b = tf.Variable(tf.random_normal(shape = [3, batch_size]))
 
 # Gaussian (RBF) kernel
-# ToDo: Gamma为什么是负值？
-# Gamma值越大，每个数据点对分类边界的影响就越大
-gamma = tf.constant(-50.)
+gamma = tf.constant(-50.)  # -1., -10., -25., -50.
 dist = tf.reduce_sum(tf.square(x_data), 1)
 dist = tf.reshape(dist, [-1, 1])
 sq_dists = tf.add(tf.subtract(dist, tf.multiply(2., tf.matmul(x_data, tf.transpose(x_data)))), tf.transpose(dist))
@@ -73,9 +75,12 @@ my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
 model_output = tf.matmul(b, my_kernel)
 first_term = tf.reduce_sum(b)
 b_vec_cross = tf.matmul(tf.transpose(b), b)
-y_target_cross = tf.matmul(y_target, tf.transpose(y_target))
-second_term = tf.reduce_sum(tf.multiply(my_kernel, tf.multiply(b_vec_cross, y_target_cross)))
-loss = tf.negative(tf.subtract(first_term, second_term))
+y_target_expand = tf.expand_dims(y_target, 1)  # 将张量扩展一个维度
+y_target_reshape = tf.reshape(y_target_expand, [3, batch_size, 1])
+# 没有batch_matmul()函数
+y_target_cross = tf.matmul(y_target_reshape, y_target_expand)
+second_term = tf.reduce_sum(tf.multiply(my_kernel, tf.multiply(b_vec_cross, y_target_cross)), [1, 2])
+loss = tf.reduce_sum(tf.negative(tf.subtract(first_term, second_term)))
 
 # Gaussian (RBF) prediction kernel
 rA = tf.reshape(tf.reduce_sum(tf.square(x_data), 1), [-1, 1])
@@ -84,9 +89,9 @@ pred_sq_dist = tf.add(tf.subtract(rA, tf.multiply(2., tf.matmul(x_data, tf.trans
                       tf.transpose(rB))
 pred_kernel = tf.exp(tf.multiply(gamma, tf.abs(pred_sq_dist)))
 
-prediction_output = tf.matmul(tf.multiply(tf.transpose(y_target), b), pred_kernel)
-prediction = tf.sign(prediction_output - tf.reduce_mean(prediction_output))
-accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.squeeze(prediction), tf.squeeze(y_target)), tf.float32))
+prediction_output = tf.matmul(tf.multiply(y_target, b), pred_kernel)
+prediction = tf.argmax(prediction_output - tf.expand_dims(tf.reduce_mean(prediction_output, 1), 1), 0)
+accuracy = tf.reduce_mean(tf.cast(tf.equal(prediction, tf.argmax(y_target, 0)), tf.float32))
 
 # Declare optimizer
 my_opt = tf.train.GradientDescentOptimizer(0.01)
@@ -102,10 +107,10 @@ batch_accuracy = []
 rand_x = []
 rand_y = []
 
-for i in range(300):
+for i in range(100):
     rand_index = np.random.choice(len(x_vals), size = batch_size)
     rand_x = x_vals[rand_index]
-    rand_y = np.transpose([y_vals[rand_index]])
+    rand_y = y_vals[:, rand_index]
     sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
 
     temp_loss = sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})
@@ -131,19 +136,20 @@ y_min, y_max = x_vals[:, 1].min() - 1, x_vals[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
                      np.arange(y_min, y_max, 0.02))
 grid_points = np.c_[xx.ravel(), yy.ravel()]
-[grid_predictions] = sess.run(prediction, feed_dict = {
-        x_data: rand_x,
-        y_target: rand_y,
-        prediction_grid: grid_points
-})
+grid_predictions = sess.run(
+        prediction, feed_dict = {
+                x_data: rand_x,
+                y_target: rand_y,
+                prediction_grid: grid_points
+        })
 grid_predictions = grid_predictions.reshape(xx.shape)
 
 # Plot points and grid
-plt.figure()
 plt.contourf(xx, yy, grid_predictions, cmap = plt.cm.Paired, alpha = 0.8)
 plt.plot(class1_x, class1_y, 'ro', label = 'I. setosa')
-plt.plot(class2_x, class2_y, 'bx', label = 'Non setosa')
-plt.title("图4-9：采用高斯核函数的 SVM 的 山鸢尾花（I. setosa）的分类器效果图\n"
+plt.plot(class2_x, class2_y, 'bx', label = 'I. versicolor')
+plt.plot(class3_x, class3_y, 'gv', label = 'I. virginica')
+plt.title("图4-10：采用高斯核函数的 SVM 的 山鸢尾花（I. setosa）的多类分类器效果图\n"
           "Gamma = {}".format(sess.run(gamma)))
 plt.xlabel('花瓣长度')
 plt.ylabel('花萼宽度')
@@ -165,6 +171,8 @@ plt.xlim([3.5, 8.5])
 # plt.title("每次迭代的损失代价")
 # plt.xlabel("迭代次数")
 # plt.ylabel("损失代价")
+
+# show_values("y_target", y_target, feed_dict = {y_target: rand_y}, session = sess)
 
 import winsound
 

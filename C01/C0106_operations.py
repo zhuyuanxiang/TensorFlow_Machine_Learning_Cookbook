@@ -18,6 +18,8 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后3位
+from tools import show_values
+
 np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
 
 # to make this notebook's output stable across runs
@@ -48,35 +50,25 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Open graph session
 sess = tf.Session()
 
-
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    print(session.run(variable, feed_dict = feed_dict))
-    pass
-
-
 # 整数除
-show_values("tf.div(3,4)", tf.div(3, 4))
+show_values(tf.div(3, 4), "tf.div(3,4)")
 # 浮点除
-show_values("tf.truediv(3,4)", tf.truediv(3, 4))
+show_values(tf.truediv(3, 4), "tf.truediv(3,4)")
 # 浮点取整除
-show_values("tf.floordiv(3.0,4.0)", tf.floordiv(3.0, 4.0))
+show_values(tf.floordiv(3.0, 4.0), "tf.floordiv(3.0,4.0)")
 # 取模
-show_values("tf.mod(22.0,5.0)", tf.mod(22.0, 5.0))
+show_values(tf.mod(22.0, 5.0), "tf.mod(22.0,5.0)")
 # 张量点积--Compute the pairwise cross product，必须是三维向量
 # 两个向量的叉乘，又叫向量积、外积、叉积，叉乘的运算结果是一个向量而不是一个标量。
 # 两个向量的叉积与这两个向量组成的坐标平面垂直。
-show_values("tf.cross([1., 0., 0.], [0., 1., 0.])", tf.cross([1., 0., 0.], [0., 1., 0.]))
+show_values(tf.cross([1., 0., 0.], [0., 1., 0.]),
+            "tf.cross([1., 0., 0.], [0., 1., 0.])")
 # show_values("tf.cross([1., 0., 0.,0.], [0., 1., 0.,0.])", tf.cross([1., 0., 0., 0.], [0., 1., 0., 0.]))
 
 # P11，数学函数列表
 
-show_values("tan(pi/4) = 1 = tf.div(tf.sin(3.1416/4.),tf.cos(3.1416/4.))",
-            tf.div(tf.sin(3.1416 / 4.), tf.cos(3.1416 / 4.)))
+show_values(tf.div(tf.sin(3.1416 / 4.), tf.cos(3.1416 / 4.)),
+            "tan(pi/4) = 1 = tf.div(tf.sin(3.1416/4.),tf.cos(3.1416/4.))")
 
 
 test_nums = range(15)
@@ -87,7 +79,7 @@ def custom_polynomial(value):
     return (tf.subtract(3 * tf.square(value), value) + 10)
 
 
-show_values("3x^2-x+10,x=11=>", custom_polynomial(11))
+show_values(custom_polynomial(11), "3x^2-x+10,x=11=>")
 
 # What should we get with list comprehension
 expected_output = [3 * x * x - x + 10 for x in test_nums]
@@ -97,7 +89,7 @@ print(expected_output)
 
 # Tensorflow custom function output
 for num in test_nums:
-    show_values("custom_polynomial({})".format(num), custom_polynomial(num))
+    show_values(custom_polynomial(num), "custom_polynomial({})".format(num))
 
 import winsound
 

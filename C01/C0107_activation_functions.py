@@ -18,6 +18,8 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后3位
+from tools import show_values
+
 np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
 
 # to make this notebook's output stable across runs
@@ -47,34 +49,27 @@ assert sklearn.__version__ >= "0.20"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Open graph session
 sess = tf.Session()
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    print(session.run(variable, feed_dict = feed_dict))
 
 test_data = [-10., -3., -1., 0., 1., 3., 10.]
 
 # 部分线性的非线性函数
 # 整流线性单元（Rectifier Linear Unit，ReLU），非线性函数。
-show_values("tf.nn.relu({})".format(test_data), tf.nn.relu(test_data))
+show_values(tf.nn.relu(test_data), "tf.nn.relu({})".format(test_data))
 # ReLUMax6
-show_values("tf.nn.relu6({})".format(test_data), tf.nn.relu6(test_data))
+show_values(tf.nn.relu6(test_data), "tf.nn.relu6({})".format(test_data))
 # softplus函数，ReLU函数的平滑版，log(exp(x)+1)
-show_values("tf.nn.softplus({})".format(test_data), tf.nn.softplus(test_data))
+show_values(tf.nn.softplus(test_data), "tf.nn.softplus({})".format(test_data))
 # ELU激励函数（Exponential Linear Unit，ELU），
 # 与softplus函数相似，只是输入无限小时，趋近于-1，而softplus函数趋近于0.
-show_values("tf.nn.elu({})".format(test_data), tf.nn.elu(test_data))
+show_values(tf.nn.elu(test_data), "tf.nn.elu({})".format(test_data))
 
 # 都是类似于Logistic函数
 # sigmoid函数，Logistic函数，1/(1+exp(-x))
-show_values("tf.nn.sigmoid({})".format(test_data), tf.nn.sigmoid(test_data))
+show_values(tf.nn.sigmoid(test_data), "tf.nn.sigmoid({})".format(test_data))
 # 双曲正切函数（Hyper Tangent，tanh），((exp(x)-exp(-x))/(exp(x)+exp(-x))
-show_values("tf.nn.tanh({})".format(test_data), tf.nn.tanh(test_data))
+show_values(tf.nn.tanh(test_data), "tf.nn.tanh({})".format(test_data))
 # softsign函数，x/(abs(x)+1)
-show_values("tf.nn.softsign({})".format(test_data), tf.nn.softsign(test_data))
+show_values(tf.nn.softsign(test_data), "tf.nn.softsign({})".format(test_data))
 
 # X range
 x_vals = np.linspace(start = -10., stop = 10., num = 100)

@@ -18,7 +18,10 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后7位
-np.set_printoptions(precision = 7, suppress = True, threshold = np.inf, linewidth = 200)
+from tools import show_values
+
+np.set_printoptions(precision = 7, suppress = True, threshold = np.inf,
+                    linewidth = 200)
 
 # to make this notebook's output stable across runs
 np.random.seed(42)
@@ -49,17 +52,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 sess = tf.Session()
 
 
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
-
-
 # 2.5 损失函数
 def regression_loss_functions():
     session = tf.Session()
@@ -71,29 +63,31 @@ def regression_loss_functions():
     # L2 loss（平方损失函数）（欧拉损失函数）
     # L = (pred - actual)^2
     l2_y_vals = tf.square(target - x_vals)
-    # show_values("l2_y_vals", l2_y_vals)
+    # show_values(l2_y_vals,"l2_y_vals")
     l2_y_out = session.run(l2_y_vals)
 
     # L1 loss（绝对值损失函数）
     # L = abs(pred - actual)
     l1_y_vals = tf.abs(target - x_vals)
-    # show_values("l1_y_vals",l1_y_vals)
+    # show_values(l1_y_vals,"l1_y_vals")
     l1_y_out = session.run(l1_y_vals)
 
     # Pseudo-Huber loss
     # L = delta^2 * (sqrt(1 + ((pred - actual)/delta)^2) - 1)
     delta1 = tf.constant(0.25)
-    phuber1_y_vals = tf.multiply(tf.square(delta1), tf.sqrt(1. + tf.square((target - x_vals) / delta1)) - 1.)
-    # show_values("phuber1_y_vals",phuber1_y_vals)
+    phuber1_y_vals = tf.multiply(tf.square(delta1), tf.sqrt(
+        1. + tf.square((target - x_vals) / delta1)) - 1.)
+    # show_values(phuber1_y_vals,"phuber1_y_vals")
     phuber1_y_out = session.run(phuber1_y_vals)
 
     delta2 = tf.constant(5.)
-    phuber2_y_vals = tf.multiply(tf.square(delta2), tf.sqrt(1. + tf.square((target - x_vals) / delta2)) - 1.)
-    # show_values("phuber2_y_vals",phuber2_y_vals)
+    phuber2_y_vals = tf.multiply(tf.square(delta2), tf.sqrt(
+        1. + tf.square((target - x_vals) / delta2)) - 1.)
+    # show_values(phuber2_y_vals,"phuber2_y_vals")
     phuber2_y_out = session.run(phuber2_y_vals)
 
     # Plot the output:
-    x_array = show_values("x_vals = ", x_vals)
+    x_array = show_values(x_vals, "x_vals = ")
     plt.plot(x_array, l2_y_out, 'b-', label = 'L2 Loss')
     plt.plot(x_array, l1_y_out, 'r--', label = 'L1 Loss')
     plt.plot(x_array, phuber1_y_out, 'k-.', label = 'P-Huber Loss (0.25)')
@@ -117,14 +111,15 @@ def classfication_loss_functions():
     # 具体的公式需要根据算法中的情况决定，下面的公式仅供参考
     # L = max(0, 1 - (pred * actual))
     hinge_y_vals = tf.maximum(0., 1. - tf.multiply(target, x_vals))
-    # hinge_y_out = show_values("hinge_y_vals", hinge_y_vals)
+    # hinge_y_out = show_values( hinge_y_vals,"hinge_y_vals")
     hinge_y_out = session.run(hinge_y_vals)
 
     # Cross entropy loss
     # 交叉熵损失函数
     # L = -actual * (log(pred)) - (1-actual)(log(1-pred))
-    xentropy_y_vals = - tf.multiply(target, tf.log(x_vals)) - tf.multiply((1. - target), tf.log(1. - x_vals))
-    # xentropy_y_out = show_values("xentropy_y_vals", xentropy_y_vals)
+    xentropy_y_vals = - tf.multiply(target, tf.log(x_vals)) - tf.multiply(
+            (1. - target), tf.log(1. - x_vals))
+    # xentropy_y_out = show_values( xentropy_y_vals,"xentropy_y_vals")
     xentropy_y_out = session.run(xentropy_y_vals)
 
     # Sigmoid entropy loss
@@ -132,8 +127,9 @@ def classfication_loss_functions():
     # L = -actual * (log(sigmoid(pred))) - (1-actual)(log(1-sigmoid(pred)))
     # or
     # L = max(actual, 0) - actual * pred + log(1 + exp(-abs(actual)))
-    xentropy_sigmoid_y_vals = tf.nn.sigmoid_cross_entropy_with_logits(labels = x_vals, logits = targets)
-    # show_values("xentropy_sigmoid_y_vals",xentropy_sigmoid_y_vals)
+    xentropy_sigmoid_y_vals = tf.nn.sigmoid_cross_entropy_with_logits(
+        labels = x_vals, logits = targets)
+    # show_values(xentropy_sigmoid_y_vals,"xentropy_sigmoid_y_vals")
     xentropy_sigmoid_y_out = session.run(xentropy_sigmoid_y_vals)
 
     # Weighted (Sigmoid) cross entropy loss
@@ -143,16 +139,20 @@ def classfication_loss_functions():
     # or
     # L = (1 - pred) * actual + (1 + (weights - 1) * pred) * log(1 + exp(-actual))
     weight = tf.constant(0.5)
-    xentropy_weighted_y_vals = tf.nn.weighted_cross_entropy_with_logits(x_vals, targets, weight)
-    # show_values("xentropy_weighted_y_vals",xentropy_weighted_y_vals)
+    xentropy_weighted_y_vals = tf.nn.weighted_cross_entropy_with_logits(x_vals,
+                                                                        targets,
+                                                                        weight)
+    # show_values(xentropy_weighted_y_vals,"xentropy_weighted_y_vals")
     xentropy_weighted_y_out = session.run(xentropy_weighted_y_vals)
 
     # Plot the output
     x_array = session.run(x_vals)
     plt.plot(x_array, hinge_y_out, 'b-', label = 'Hinge Loss')
     plt.plot(x_array, xentropy_y_out, 'r--', label = 'Cross Entropy Loss')
-    plt.plot(x_array, xentropy_sigmoid_y_out, 'k-.', label = 'Cross Entropy Sigmoid Loss')
-    plt.plot(x_array, xentropy_weighted_y_out, 'g:', label = 'Weighted Cross Entropy Loss (x0.5)')
+    plt.plot(x_array, xentropy_sigmoid_y_out, 'k-.',
+             label = 'Cross Entropy Sigmoid Loss')
+    plt.plot(x_array, xentropy_weighted_y_out, 'g:',
+             label = 'Weighted Cross Entropy Loss (x0.5)')
     plt.ylim(-1.5, 3)
     # plt.xlim(-1, 3)
     plt.legend(loc = 'lower right', prop = {'size': 11})
@@ -165,7 +165,7 @@ def classfication_loss_functions():
     target_dist = tf.constant([[0.1, 0.02, 0.88]])
     softmax_xentropy = tf.nn.softmax_cross_entropy_with_logits(
             logits = unscaled_logits, labels = target_dist)
-    show_values("softmax_xentropy", softmax_xentropy)
+    show_values(softmax_xentropy, "softmax_xentropy")
     # print(session.run(softmax_xentropy))
 
     # Sparse entropy loss
@@ -176,7 +176,7 @@ def classfication_loss_functions():
     sparse_target_dist = tf.constant([2])
     sparse_xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits = unscaled_logits, labels = sparse_target_dist)
-    show_values("sparse_xentropy", sparse_xentropy)
+    show_values(sparse_xentropy, "sparse_xentropy")
     # print(session.run(sparse_xentropy))
 
 

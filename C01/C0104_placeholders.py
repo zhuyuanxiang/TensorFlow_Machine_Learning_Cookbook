@@ -18,6 +18,8 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后3位
+from tools import show_values
+
 np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
 
 # to make this notebook's output stable across runs
@@ -48,17 +50,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Open graph session
 sess = tf.Session()
 
-
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    print(session.run(variable, feed_dict = feed_dict))
-    pass
-
-
 # 变量必须在 session 中初始化，才可以使用
 def declare_variable():
     number_title = "TensorFlow 使用变量"
@@ -75,7 +66,7 @@ def declare_variable():
     print("my_var = ", my_var)
     print("sess.run(my_var)", sess.run(my_var))
 
-    show_values("initialize_op", initialize_op)
+    show_values(initialize_op, "initialize_op")
     # 不同的 session ，不同的环境初始化。
     # show_values("my_var", my_var)
 
@@ -105,9 +96,11 @@ def declare_placeholder():
     x_vals = np.random.rand(4, 4)
     print("x_vals = ")
     print(x_vals)
-    show_values("tf.identity(tf.placeholder(tf.float32, shape = (4,4)))", y, feed_dict = {x: x_vals})
-    show_values("tf.matmul(x_vals,x_vals)",tf.matmul(x_vals,x_vals))
-    show_values("tf.matmul(2,tf.placeholder(tf.float32, shape = (4,4)))", z, feed_dict = {x: x_vals})
+    show_values(y, "tf.identity(tf.placeholder(tf.float32, shape = (4,4)))",
+                feed_dict = {x: x_vals})
+    show_values(tf.matmul(x_vals, x_vals), "tf.matmul(x_vals,x_vals)")
+    show_values(z, "tf.matmul(2,tf.placeholder(tf.float32, shape = (4,4)))",
+                feed_dict = {x: x_vals})
 
     # merged = tf.summary.merge_all()
     # writer = tf.summary.FileWriter("/tmp/variable_logs", sess.graph_def)

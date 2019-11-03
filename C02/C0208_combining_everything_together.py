@@ -49,17 +49,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 sess = tf.Session()
 
 
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
-
-
 number_title = "TensorFlow 创建分类器"
 print('\n', '-' * 5, number_title, '-' * 5)
 

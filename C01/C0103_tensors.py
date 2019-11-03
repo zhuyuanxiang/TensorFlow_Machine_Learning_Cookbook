@@ -48,28 +48,28 @@ def declare_fix_tensor():
     zeros_tsr = tf.zeros([row_dim, col_dim])
     with sess.as_default():
         print(zeros_tsr.eval())
-    show_values('zeros_tsr', zeros_tsr)
+    show_values(zeros_tsr, 'zeros_tsr')
 
     # 创建指定维度的单位张量
     # One initialized variable
     ones_tsr = tf.ones([row_dim, col_dim])
-    show_values("ones_tsr", ones_tsr)
+    show_values(ones_tsr, "ones_tsr")
 
     # 创建指定维度的常数填充的张量
     filled_tsr = tf.fill([row_dim, col_dim], 42)
-    show_values("filled_tsr", filled_tsr)
+    show_values(filled_tsr, "filled_tsr")
 
     # 创建常数张量
     # Fill shape with a constant
     constant_tsr = tf.constant([[1, 2, 3], [4, 5, 6]])
-    show_values("constant_tsr", constant_tsr)
+    show_values(constant_tsr, "constant_tsr")
 
     # Create a variable from a constant
     const_tsr = tf.constant([8, 6, 7, 5, 3, 0, 9])
-    show_values("const_tsr", const_tsr)
+    show_values(const_tsr, "const_tsr")
     # This can also be used to fill an array:
     const_fill_tsr = tf.constant(-1, shape = [row_dim, col_dim])
-    show_values("const_fill_tsr", const_fill_tsr)
+    show_values(const_fill_tsr, "const_fill_tsr")
     pass
 
 
@@ -83,46 +83,46 @@ def declare_similar_tensor():
 
     # 相似形状的零张量
     zeros_similar_tsr = tf.zeros_like(constant_tsr)
-    show_values("zeros_similar_tsr", zeros_similar_tsr)
+    show_values(zeros_similar_tsr, "zeros_similar_tsr")
 
     # 相似形状的单位张量
     ones_similar_tsr = tf.ones_like(constant_tsr)
-    show_values("ones_similar_tsr", ones_similar_tsr)
+    show_values(ones_similar_tsr, "ones_similar_tsr")
 
     # 运算符重载
     two_similar_tsr = ones_similar_tsr + ones_similar_tsr
-    show_values("two_similar_tsr", two_similar_tsr)
+    show_values(two_similar_tsr, "two_similar_tsr")
 
     four_similar_tsr = two_similar_tsr * two_similar_tsr
-    show_values("four_similar_tsr", four_similar_tsr)
+    show_values(four_similar_tsr, "four_similar_tsr")
 
     neg_four_similar_tsr = -four_similar_tsr
-    show_values("neg_four_similar_tsr", neg_four_similar_tsr)
+    show_values(neg_four_similar_tsr, "neg_four_similar_tsr")
 
     neg_eight_similar_tsr = 2 * neg_four_similar_tsr
-    show_values("neg_eight_similar_tsr", neg_eight_similar_tsr)
+    show_values(neg_eight_similar_tsr, "neg_eight_similar_tsr")
 
     eight_similar_tsr = abs(neg_eight_similar_tsr)
-    show_values("eight_similar_tsr", eight_similar_tsr)
+    show_values(eight_similar_tsr, "eight_similar_tsr")
 
     twelve_similar_tsr = eight_similar_tsr - neg_four_similar_tsr
-    show_values("twelve_similar_tsr", twelve_similar_tsr)
+    show_values(twelve_similar_tsr, "twelve_similar_tsr")
 
     three_similar_tsr = twelve_similar_tsr / four_similar_tsr
-    show_values("three_similar_tsr", three_similar_tsr)
+    show_values(three_similar_tsr, "three_similar_tsr")
 
     a = tf.constant([[1., 2., 3.], [4., 5., 6.]], dtype = tf.float64)
     a_one = a * a  # 这个是矩阵数乘，不是矩阵乘法
-    show_values("a_one", a_one)
+    show_values(a_one, "a_one")
 
     a_floor_div = a // three_similar_tsr
-    show_values("a_floor_div", a_floor_div)
+    show_values(a_floor_div, "a_floor_div")
 
     a_mod = a % three_similar_tsr
-    show_values("a_mod", a_mod)
+    show_values(a_mod, "a_mod")
 
     a_power = a ** three_similar_tsr
-    show_values("a_power", a_power)
+    show_values(a_power, "a_power")
 
 
 # 3. 序列张量
@@ -130,10 +130,10 @@ def declare_seq_tensor():
     number_title = "TensorFlow 声明序列张量"
     print('\n', '-' * 5, number_title, '-' * 5)
     linear_seq_tsr = tf.linspace(start = 0.0, stop = 1.0, num = 3)
-    show_values("linear_seq_tsr", linear_seq_tsr)
+    show_values(linear_seq_tsr, "linear_seq_tsr")
 
     integer_seq_tsr = tf.range(start = 6, limit = 15, delta = 3)
-    show_values("integer_seq_tsr", integer_seq_tsr)
+    show_values(integer_seq_tsr, "integer_seq_tsr")
 
 
 # 4. 随机张量
@@ -144,23 +144,23 @@ def declare_random_tensor():
     row_dim, col_dim = (13, 12)
     # 均匀分布的随机数
     randunif_tsr = tf.random_uniform([row_dim, col_dim], minval = 0, maxval = 1)
-    show_values("randunif_tsr", randunif_tsr)
+    show_values(randunif_tsr, "randunif_tsr")
 
     # 正态分布的随机数
     randnorm_tsr = tf.random_normal([row_dim, col_dim], mean = 0.0, stddev = 1.0)
-    show_values("randnorm_tsr", randnorm_tsr)
+    show_values(randnorm_tsr, "randnorm_tsr")
 
     # 带有指定边界的正态分布的随机数
     runcnorm_tsr = tf.truncated_normal([row_dim, col_dim], mean = 0.0, stddev = 1.0)
-    show_values("runcnorm_tsr", runcnorm_tsr)
+    show_values(runcnorm_tsr, "runcnorm_tsr")
 
     # 张量随机化
     shuffled_output = tf.random_shuffle(randunif_tsr)
-    show_values("shuffled_output", shuffled_output)
+    show_values(shuffled_output, "shuffled_output")
 
     # 张量的随机剪裁
     cropped_output = tf.random_crop(randunif_tsr, [7, 5])
-    show_values("cropped_output", cropped_output)
+    show_values(cropped_output, "cropped_output")
 
     # 这个是剪裁图片的例子，没有图片，不能执行
     # cropped_image = tf.random_crop(my_image, [height / 2, width / 2, 3])

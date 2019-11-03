@@ -18,7 +18,8 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后7位
-np.set_printoptions(precision = 7, suppress = True, threshold = np.inf, linewidth = 200)
+np.set_printoptions(precision = 7, suppress = True, threshold = np.inf,
+                    linewidth = 200)
 
 # to make this notebook's output stable across runs
 np.random.seed(42)
@@ -47,17 +48,6 @@ assert sklearn.__version__ >= "0.20"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Open graph session
 sess = tf.Session()
-
-
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
 
 
 # Regression Example:
@@ -102,10 +92,11 @@ def regression_example():
         rand_index = np.random.choice(100)
         rand_x = [x_vals[rand_index]]
         rand_y = [y_vals[rand_index]]
-        sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
+        feed_dict = {x_data: rand_x, y_target: rand_y}
+        sess.run(train_step, feed_dict = feed_dict)
         if (i + 1) % 25 == 0:
             print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)))
-            print('Loss = ' + str(sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})))
+            print('Loss = ' + str(sess.run(loss, feed_dict = feed_dict)))
 
 
 # Classification Example
@@ -120,7 +111,8 @@ def regression_example():
 
 def classification_example():
     # Create data
-    x_vals = np.concatenate((np.random.normal(-1, 1, 50), np.random.normal(3, 1, 50)))
+    x_vals = np.concatenate(
+            (np.random.normal(-1, 1, 50), np.random.normal(3, 1, 50)))
     y_vals = np.concatenate((np.repeat(0., 50), np.repeat(1., 50)))
     # plt.scatter(x_vals, y_vals)
     # plt.title("原始数据的散点图")
@@ -149,7 +141,8 @@ def classification_example():
     # Add classification loss (cross entropy)
     # 原代码把输入数据和目标数据放反了。
     # xentropy = tf.nn.sigmoid_cross_entropy_with_logits(labels = my_output_expanded, logits = y_target_expanded)
-    xentropy = tf.nn.sigmoid_cross_entropy_with_logits(logits = my_output_expanded, labels = y_target_expanded)
+    xentropy = tf.nn.sigmoid_cross_entropy_with_logits(
+        logits = my_output_expanded, labels = y_target_expanded)
     # ToDo: 未来尝试更换其他代价函数
     # xentropy = - tf.matmul(y_target_expanded, tf.log(my_output_expanded)) \
     #            - tf.matmul((1. - y_target_expanded), tf.log(1. - my_output_expanded))
@@ -171,13 +164,16 @@ def classification_example():
         sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
         if (i + 1) % 200 == 0:
             print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)))
-            print('Loss = ' + str(sess.run(tf.sigmoid(xentropy), feed_dict = {x_data: rand_x, y_target: rand_y})))
+            print('Loss = ' + str(sess.run(tf.sigmoid(xentropy), feed_dict = {
+                    x_data: rand_x, y_target: rand_y
+            })))
 
     # Evaluate Predictions
     predictions = []
     for i in range(len(x_vals)):
         x_val = [x_vals[i]]
-        prediction = sess.run(tf.round(tf.sigmoid(my_output)), feed_dict = {x_data: x_val})
+        prediction = sess.run(tf.round(tf.sigmoid(my_output)),
+                              feed_dict = {x_data: x_val})
         predictions.append(prediction[0])
 
     accuracy = sum(x == y for x, y in zip(predictions, y_vals)) / 100.

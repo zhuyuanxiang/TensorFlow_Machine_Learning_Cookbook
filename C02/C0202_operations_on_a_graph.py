@@ -18,6 +18,8 @@ import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import pandas as pd
 
 # 设置数据显示的精确度为小数点后3位
+from tools import show_values
+
 np.set_printoptions(precision = 3, suppress = True, threshold = np.inf, linewidth = 200)
 
 # to make this notebook's output stable across runs
@@ -50,16 +52,6 @@ sess = tf.Session()
 
 
 # 2.2 计算图
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    print(session.run(variable, feed_dict = feed_dict))
-    pass
-
-
 # Create data to feed in
 x_vals = np.array([1., 3., 5., 7., 9.])
 # placeholder() 占位符
@@ -68,8 +60,9 @@ m_const = tf.constant(3.)
 my_product = tf.multiply(x_data, m_const)
 print("x_vals = ", x_vals)
 for x_val in x_vals:
-    show_values("tf.multiply(tf.placeholder(tf.float32), tf.constant(3.)) = ",
-                my_product, feed_dict = {x_data: x_val})
+    show_values(my_product,
+                "tf.multiply(tf.placeholder(tf.float32), tf.constant(3.)) = ",
+                feed_dict = {x_data: x_val})
     pass
 print('-' * 50)
 my_product = x_data + m_const

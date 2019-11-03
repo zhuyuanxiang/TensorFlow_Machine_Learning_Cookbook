@@ -13,52 +13,36 @@
 @Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0207，P34
 @Desc       :   TensorFlow 进阶，TensorFlow 实现随机训练和批量训练
 """
-# Common imports
-import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
-import pandas as pd
-
-# 设置数据显示的精确度为小数点后7位
-np.set_printoptions(precision = 7, suppress = True, threshold = np.inf, linewidth = 200)
-
-# to make this notebook's output stable across runs
-np.random.seed(42)
-
-# To plot pretty figures
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-mpl.rc('axes', labelsize = 14)
-mpl.rc('xtick', labelsize = 12)
-mpl.rc('ytick', labelsize = 12)
-
 import os
 import sys
 import sklearn
+import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.python.framework import ops
+from tools import show_values
 
-# 初始化默认的计算图
-ops.reset_default_graph()
+# 设置数据显示的精确度为小数点后3位
+np.set_printoptions(precision = 3, suppress = True, threshold = np.inf,
+                    linewidth = 200)
+# to make this notebook's output stable across runs
+np.random.seed(42)
+
 # Python ≥3.5 is required
 assert sys.version_info >= (3, 5)
 # Scikit-Learn ≥0.20 is required
 assert sklearn.__version__ >= "0.20"
+# numpy 1.16.4 is required
+assert np.__version__ in ["1.16.5", "1.16.4"]
 # 屏蔽警告：Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# 初始化默认的计算图
+ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
 
 
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None, session = None):
-    if session is None:
-        session = tf.Session()
-    print('-' * 50)
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
+
 
 
 # Stochastic Training:
@@ -146,7 +130,7 @@ for i in range(1000):
     sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
     if (i + 1) % 5 == 0:
         temp_loss = sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})
-        # temp_loss = show_values("loss", loss, feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
+        # temp_loss = show_valuesloss,("loss",  feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
         if (i + 1) % 50 == 0:
             print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)))
             print('Loss = ' + str(temp_loss))

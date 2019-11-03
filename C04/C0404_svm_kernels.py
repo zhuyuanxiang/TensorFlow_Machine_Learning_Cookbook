@@ -165,7 +165,7 @@ grid_predictions = sess.run(
 
 # Plot points and grid
 plt.figure()
-plt.contourf(xx, yy, grid_predictions, cmap = plt.cm.Paired,alpha = 0.8)
+plt.contourf(xx, yy, grid_predictions, cmap = plt.cm.Paired, alpha = 0.8)
 plt.plot(class1_x, class1_y, 'ro', label = "Class 1")
 plt.plot(class2_x, class2_y, 'bx', label = "Class -1")
 plt.title("图4-8：使用非线性的高斯核函数 SVM 在非线性可分的数据集上进行分割")
@@ -207,25 +207,25 @@ for ix, p in enumerate(new_points):
     print('{} : class = {}'.format(p, evaluations[ix]))
 pass
 
-# gamma = tf.constant(-50.0)
-# dist = tf.reshape(tf.reduce_sum(tf.square(x_data), 1), [-1, 1])
-# data_dist = tf.multiply(2., tf.matmul(x_data, tf.transpose(x_data)))
-# sq_dists = tf.add(tf.subtract(dist, data_dist), tf.transpose(dist))
-# my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
-show_values("dist", dist,feed_dict = {x_data: rand_x})
-# show_values("data_dist", data_dist,feed_dict = {x_data: rand_x})
-# show_values("tf.subtract(dist, data_dist)", tf.subtract(dist, data_dist),feed_dict = {x_data: rand_x})
-# show_values("sq_dists", sq_dists,feed_dict = {x_data: rand_x})
-# show_values("prediction_output", prediction_output,
-#             feed_dict = {x_data: rand_x, y_target: rand_y, prediction_grid: new_points},
-#             session = sess)
-# show_values("pred_kernel", pred_kernel,
-#             feed_dict = {x_data: rand_x, y_target: rand_y, prediction_grid: new_points},
-#             session = sess)
-# show_values("model_output", model_output,
-#             feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
-# show_values("second_term", second_term,
-#             feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
+gamma = tf.constant(-50.0)
+dist = tf.reshape(tf.reduce_sum(tf.square(x_data), 1), [-1, 1])
+data_dist = tf.multiply(2., tf.matmul(x_data, tf.transpose(x_data)))
+sq_dists = tf.add(tf.subtract(dist, data_dist), tf.transpose(dist))
+my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
+show_values(dist, "dist", feed_dict = {x_data: rand_x})
+show_values(data_dist, "data_dist", feed_dict = {x_data: rand_x})
+show_values(tf.subtract(dist, data_dist), "tf.subtract(dist, data_dist)", feed_dict = {x_data: rand_x})
+show_values(sq_dists, "sq_dists", feed_dict = {x_data: rand_x})
+show_values(prediction_output, "prediction_output",
+            feed_dict = {x_data: rand_x, y_target: rand_y, prediction_grid: new_points},
+            session = sess)
+show_values(pred_kernel, "pred_kernel",
+            feed_dict = {x_data: rand_x, y_target: rand_y, prediction_grid: new_points},
+            session = sess)
+show_values(model_output, "model_output",
+            feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
+show_values(second_term, "second_term",
+            feed_dict = {x_data: rand_x, y_target: rand_y}, session = sess)
 
 import winsound
 

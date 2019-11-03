@@ -40,7 +40,7 @@ sess = tf.Session()
 
 # Load the data
 # iris.data = [(Sepal Length, Sepal Width, Petal Length, Petal Width)]
-iris = datasets.load_iris()
+iris = sklearn.datasets.load_iris()
 x_vals = np.array([[x[0], x[3]] for x in iris.data])
 y_vals1 = np.array([1 if y == 0 else -1 for y in iris.target])
 y_vals2 = np.array([1 if y == 1 else -1 for y in iris.target])
@@ -172,7 +172,7 @@ plt.xlim([3.5, 8.5])
 # plt.xlabel("迭代次数")
 # plt.ylabel("损失代价")
 
-# show_values("y_target", y_target, feed_dict = {y_target: rand_y}, session = sess)
+# show_values( y_target, "y_target",feed_dict = {y_target: rand_y}, session = sess)
 
 import winsound
 

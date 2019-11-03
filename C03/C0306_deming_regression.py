@@ -101,8 +101,9 @@ for i in range(iterations):
     rand_index = np.random.choice(len(x_vals), size = batch_size)
     rand_x = np.transpose([x_vals[rand_index]])
     rand_y = np.transpose([y_vals[rand_index]])
-    sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
-    temp_loss = sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})
+    feed_dict = {x_data: rand_x, y_target: rand_y}
+    sess.run(train_step, feed_dict = feed_dict)
+    temp_loss = sess.run(loss, feed_dict = feed_dict)
     loss_vec.append(temp_loss)
     if i % 49 == 0:
         print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)) + ' b = ' + str(sess.run(b)))

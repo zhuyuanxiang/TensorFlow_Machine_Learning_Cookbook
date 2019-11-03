@@ -13,51 +13,33 @@
 @Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0209，P40
 @Desc       :   TensorFlow 进阶，TensorFlow 实现模型评估
 """
-# Common imports
-import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
-import pandas as pd
-
-# 设置数据显示的精确度为小数点后7位
-np.set_printoptions(precision = 7, suppress = True, threshold = np.inf, linewidth = 200)
-
-# to make this notebook's output stable across runs
-np.random.seed(42)
-
-# To plot pretty figures
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-mpl.rc('axes', labelsize = 14)
-mpl.rc('xtick', labelsize = 12)
-mpl.rc('ytick', labelsize = 12)
-
 import os
 import sys
 import sklearn
+import numpy as np  # pip install numpy<1.17，小于1.17就不会报错
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.python.framework import ops
+from tools import show_values
 
-# 初始化默认的计算图
-ops.reset_default_graph()
+# 设置数据显示的精确度为小数点后3位
+np.set_printoptions(precision = 3, suppress = True, threshold = np.inf,
+                    linewidth = 200)
+# to make this notebook's output stable across runs
+np.random.seed(42)
+
 # Python ≥3.5 is required
 assert sys.version_info >= (3, 5)
 # Scikit-Learn ≥0.20 is required
 assert sklearn.__version__ >= "0.20"
+# numpy 1.16.4 is required
+assert np.__version__ in ["1.16.5", "1.16.4"]
 # 屏蔽警告：Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# 初始化默认的计算图
+ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
-
-
-# 规范化的显示执行的效果
-def show_values(var_name, variable, feed_dict = None):
-    print('-' * 50)
-    session = tf.Session()
-    print("{} = {}".format(var_name, variable))
-    print("session.run({}) = ".format(var_name))
-    result = session.run(variable, feed_dict = feed_dict)
-    print(result)
-    return result
 
 
 # 回归模型。
@@ -78,7 +60,8 @@ def regression_model():
     y_target = tf.placeholder(shape = [None, 1], dtype = tf.float32)
 
     # Split data into train/test = 80%/20%
-    train_indices = np.random.choice(len(x_vals), int(round(len(x_vals) * .8)), replace = False)
+    train_indices = np.random.choice(len(x_vals), int(round(len(x_vals) * .8)),
+                                     replace = False)
     test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
     x_vals_train = x_vals[train_indices]
     x_vals_test = x_vals[test_indices]
@@ -110,13 +93,21 @@ def regression_model():
         sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
         if i % 11 == 0:
             print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)))
-            print('Loss = ' + str(sess.run(loss, feed_dict = {x_data: rand_x, y_target: rand_y})))
+            print('Loss = ' + str(sess.run(loss, feed_dict = {
+                    x_data: rand_x, y_target: rand_y
+            })))
 
     # Evaluate accuracy (loss) on test set
     mse_test = sess.run(
-            loss, feed_dict = {x_data: np.transpose([x_vals_test]), y_target: np.transpose([y_vals_test])})
+            loss, feed_dict = {
+                    x_data: np.transpose([x_vals_test]),
+                    y_target: np.transpose([y_vals_test])
+            })
     mse_train = sess.run(
-            loss, feed_dict = {x_data: np.transpose([x_vals_train]), y_target: np.transpose([y_vals_train])})
+            loss, feed_dict = {
+                    x_data: np.transpose([x_vals_train]),
+                    y_target: np.transpose([y_vals_train])
+            })
     print("MSE on test:" + str(np.round(mse_test, 2)))
     print("MSE on train:" + str(np.round(mse_train, 2)))
 
@@ -135,13 +126,16 @@ def classification_model():
     batch_size = 250
 
     # Create data
-    x_vals = np.concatenate((np.random.normal(-1, 1, 500), np.random.normal(2, 1, 500)))
+    x_vals = np.concatenate(
+            (np.random.normal(-1, 1, 500), np.random.normal(2, 1, 500)))
     y_vals = np.concatenate((np.repeat(0., 500), np.repeat(1., 500)))
     x_data = tf.placeholder(shape = [1, None], dtype = tf.float32)
     y_target = tf.placeholder(shape = [1, None], dtype = tf.float32)
 
     # Split data into train/test = 80%/20%
-    train_indices = np.random.choice(len(x_vals), int(round(len(x_vals) * 0.8)), replace = False)
+    train_indices = np.random.choice(len(x_vals),
+                                     int(round(len(x_vals) * 0.8)),
+                                     replace = False)
     test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
     x_vals_train = x_vals[train_indices]
     x_vals_test = x_vals[test_indices]
@@ -161,7 +155,9 @@ def classification_model():
     sess.run(init)
 
     # Add classification loss (cross entropy)
-    xentropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = my_output, labels = y_target))
+    xentropy = tf.reduce_mean(
+            tf.nn.sigmoid_cross_entropy_with_logits(logits = my_output,
+                                                    labels = y_target))
 
     # Create Optimizer
     my_opt = tf.train.GradientDescentOptimizer(0.05)
@@ -175,23 +171,32 @@ def classification_model():
         sess.run(train_step, feed_dict = {x_data: rand_x, y_target: rand_y})
         if (i + 1) % 200 == 0:
             print('Step #' + str(i + 1) + ' A = ' + str(sess.run(A)))
-            print('Loss = ' + str(sess.run(xentropy, feed_dict = {x_data: rand_x, y_target: rand_y})))
+            print('Loss = ' + str(sess.run(xentropy, feed_dict = {
+                    x_data: rand_x, y_target: rand_y
+            })))
 
     # Evaluate Predictions on test set
     y_prediction = tf.squeeze(tf.round(tf.nn.sigmoid(tf.add(x_data, A))))
     correct_prediction = tf.equal(y_prediction, y_target)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    acc_value_train = sess.run(accuracy, feed_dict = {x_data: [x_vals_train], y_target: [y_vals_train]})
-    acc_value_test = sess.run(accuracy, feed_dict = {x_data: [x_vals_test], y_target: [y_vals_test]})
+    acc_value_train = sess.run(accuracy, feed_dict = {
+            x_data: [x_vals_train], y_target: [y_vals_train]
+    })
+    acc_value_test = sess.run(accuracy, feed_dict = {
+            x_data: [x_vals_test], y_target: [y_vals_test]
+    })
     print("Accuracy on train set: " + str(acc_value_train))
     print("Accuracy on test set: " + str(acc_value_test))
 
     # Plot classification result
     A_result = - sess.run(A)
     bins = np.linspace(-5, 5, 500)
-    plt.hist(x_vals[0:500], bins, alpha = 0.5, label = 'N(-1,1)', color = 'blue')
-    plt.hist(x_vals[500:1000], bins, alpha = 0.5, label = 'N(2,1)', color = 'red')
-    plt.plot((A_result, A_result), (0, 8), 'k--', linewidth = 3, label = 'A = ' + str(np.round(A_result, 2)))
+    plt.hist(x_vals[0:500], bins, alpha = 0.5, label = 'N(-1,1)',
+             color = 'blue')
+    plt.hist(x_vals[500:1000], bins, alpha = 0.5, label = 'N(2,1)',
+             color = 'red')
+    plt.plot((A_result, A_result), (0, 8), 'k--', linewidth = 3,
+             label = 'A = ' + str(np.round(A_result, 2)))
     plt.legend(loc = 'upper right')
     plt.suptitle("图2-8：模型A和数据点的可视化——两个正态分布（均值为-1和2）。\n"
                  "理论上的最佳分割点是(0.5)，模型结果为（{}）。".format(A_result))

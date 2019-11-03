@@ -102,8 +102,9 @@ for i in range(iterations):
     rand_index = np.random.choice(len(x_vals), size = batch_size)
     rand_x = np.transpose([x_vals[rand_index]])
     rand_y = np.transpose([y_vals[rand_index]])
-    sess.run(train_step_lasso, feed_dict = {x_data: rand_x, y_target: rand_y})
-    temp_loss = sess.run(loss_lasso, feed_dict = {x_data: rand_x, y_target: rand_y})
+    feed_dict = {x_data: rand_x, y_target: rand_y}
+    sess.run(train_step_lasso, feed_dict = feed_dict)
+    temp_loss = sess.run(loss_lasso, feed_dict = feed_dict)
     loss_vec_lasso.append(temp_loss[0])
     if i % 299 == 0:
         print('Loss = ' + str(temp_loss))

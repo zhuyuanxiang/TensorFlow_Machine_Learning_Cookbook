@@ -176,10 +176,10 @@ if __name__ == "__main__":
     # declare_seq_tensor()
 
     # declare_random_tensor()
-    import winsound
-
-    # 运行结束的提醒
-    winsound.Beep(600, 500)
     if len(plt.get_fignums()) != 0:
+        import winsound
+
+        # 运行结束的提醒
+        winsound.Beep(600, 500)
         plt.show()
     pass

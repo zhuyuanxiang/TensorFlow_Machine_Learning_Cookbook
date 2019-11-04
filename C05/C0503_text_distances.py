@@ -10,8 +10,8 @@
 @Version    :   v0.1
 @Time       :   2019-11-03 12:25
 @License    :   (C)Copyright 2018-2019, zYx.Tom
-@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec05，P
-@Desc       :   基于 TensorFlow 的线性回归，使用 TensorFlow 实现 
+@Reference  :   《TensorFlow机器学习实战指南，Nick McClure》, Sec0503，P95
+@Desc       :   基于 TensorFlow 的线性回归，使用 TensorFlow 实现 文本距离度量
 """
 import os
 import sys

@@ -89,10 +89,10 @@ show_values(tf.cholesky(identity_matrix), "cholesky(identity_matrix)")
 # 剩下的是特征向量
 show_values(tf.self_adjoint_eig(D), "eigen_values + eigen vectors")
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

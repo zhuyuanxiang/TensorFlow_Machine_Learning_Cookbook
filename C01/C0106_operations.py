@@ -91,10 +91,10 @@ print(expected_output)
 for num in test_nums:
     show_values(custom_polynomial(num), "custom_polynomial({})".format(num))
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

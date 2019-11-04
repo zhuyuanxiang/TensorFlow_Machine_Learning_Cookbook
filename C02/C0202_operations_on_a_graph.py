@@ -72,10 +72,10 @@ with sess.as_default():
     pass
 print("sess.run(my_product,feed_dict = replace_dict)", sess.run(my_product, feed_dict = replace_dict))
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

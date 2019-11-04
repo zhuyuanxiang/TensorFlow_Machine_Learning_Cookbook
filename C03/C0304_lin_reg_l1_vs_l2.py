@@ -175,10 +175,10 @@ plt.ylabel("Loss 损失函数")
 plt.legend(loc = 'upper right')
 plt.title("图3-5：iris 数据线性回归的L1损失函数和L2损失函数\n学习率={}".format(learning_rate))
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

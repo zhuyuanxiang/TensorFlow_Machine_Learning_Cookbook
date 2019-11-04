@@ -135,10 +135,10 @@ plt.xlabel("迭代次数")
 plt.ylabel("Loss 损失函数")
 plt.title("iris 数据线性回归的 Demming 损失函数\n学习率={}".format(learning_rate))
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

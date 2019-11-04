@@ -104,10 +104,10 @@ plt.plot(x_vals, y_vals, 'o', label = '数据')
 plt.plot(x_vals, best_fit, 'r-', label = '最佳匹配线', linewidth = 3)
 plt.legend(loc = 'upper left')
 plt.suptitle("图3-2：通过矩阵分解求解拟合直线和数据点")
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

@@ -113,10 +113,10 @@ plt.ylim([-2, 2])
 plt.legend(loc = 'upper left')
 plt.title("图1-3：sigmoid、softsign 和 tanh 激励函数")
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

@@ -43,14 +43,6 @@ ops.reset_default_graph()
 # Open graph session
 sess = tf.Session()
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
-if len(plt.get_fignums()) != 0:
-    plt.show()
-pass
-
 
 def show_values(variable, title = None, feed_dict = None,
                 session = None):

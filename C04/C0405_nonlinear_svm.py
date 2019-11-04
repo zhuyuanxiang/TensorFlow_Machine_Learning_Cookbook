@@ -166,10 +166,10 @@ plt.xlim([3.5, 8.5])
 # plt.xlabel("迭代次数")
 # plt.ylabel("损失代价")
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

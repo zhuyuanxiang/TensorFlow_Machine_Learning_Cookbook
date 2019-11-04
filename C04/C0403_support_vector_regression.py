@@ -149,10 +149,10 @@ plt.xlabel("迭代次数")
 plt.ylabel("L2 损失值")
 plt.legend(loc="upper right")
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

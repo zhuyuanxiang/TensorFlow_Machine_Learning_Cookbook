@@ -241,10 +241,10 @@ if __name__ == "__main__":
     load_shakespeare_data()
 
     load_eng_ger_sent_translate_data()
-    import winsound
-
-    # 运行结束的提醒
-    winsound.Beep(600, 500)
     if len(plt.get_fignums()) != 0:
+        import winsound
+
+        # 运行结束的提醒
+        winsound.Beep(600, 500)
         plt.show()
     pass

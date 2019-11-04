@@ -83,10 +83,10 @@ with tf.name_scope('Custom_Layer') as scope:
 show_values(custom_layer1, "custom_layer(mov_avg_layer) = ",
             feed_dict = {x_data: x_vals})
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

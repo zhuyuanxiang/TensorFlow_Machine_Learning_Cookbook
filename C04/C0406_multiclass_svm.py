@@ -174,10 +174,10 @@ plt.xlim([3.5, 8.5])
 
 # show_values( y_target, "y_target",feed_dict = {y_target: rand_y}, session = sess)
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

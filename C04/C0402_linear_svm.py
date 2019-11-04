@@ -154,10 +154,10 @@ plt.legend(loc = "lower right")
 plt.xlabel("花瓣宽度")
 plt.ylabel("花萼长度")
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

@@ -140,10 +140,10 @@ for i in range(1000):
 plt.plot(range(0, 1000, 5), loss_batch, 'r--', label = 'Batch Loss, size=20')
 plt.legend(loc = 'upper right', prop = {'size': 11})
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

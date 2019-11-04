@@ -85,10 +85,10 @@ for x_val in x_vals:
     show_values(add1, "tf.add(tf.matmul(tf.matmul(x_data, m1), m2), a1)",
                 feed_dict = {x_data: x_val})
 
-import winsound
-
-# 运行结束的提醒
-winsound.Beep(600, 500)
 if len(plt.get_fignums()) != 0:
+    import winsound
+
+    # 运行结束的提醒
+    winsound.Beep(600, 500)
     plt.show()
 pass

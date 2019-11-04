@@ -183,10 +183,10 @@ def classification_example():
 if __name__ == "__main__":
     # regression_example()
     classification_example()
-    import winsound
-
-    # 运行结束的提醒
-    winsound.Beep(600, 500)
     if len(plt.get_fignums()) != 0:
+        import winsound
+
+        # 运行结束的提醒
+        winsound.Beep(600, 500)
         plt.show()
     pass

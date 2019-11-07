@@ -2,11 +2,16 @@
   <dictionary name="Administrator">
     <words>
       <w>clure</w>
+      <w>conv</w>
+      <w>convolutional</w>
+      <w>cudnn</w>
       <w>dataset</w>
       <w>demming</w>
       <w>eigen</w>
       <w>heavyside</w>
+      <w>implmented</w>
       <w>logits</w>
+      <w>maxpool</w>
       <w>pred</w>
       <w>softmax</w>
       <w>sqrt</w>

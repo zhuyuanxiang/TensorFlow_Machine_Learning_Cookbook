@@ -49,7 +49,7 @@ def show_values(variable, title = None, feed_dict = None,
     if type(title) is not str:
         print("Show_values()函数被重构了，把变量放在了第一个参数，把标题放在了第二个参数")
     if title is None:
-        title = variable.__name__
+        title = str(variable)
     if session is None:
         session = tf.Session()
     print('-' * 50)

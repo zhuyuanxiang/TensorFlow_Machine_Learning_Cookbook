@@ -90,6 +90,7 @@ pred_sq_dist = tf.add(tf.subtract(rA, tf.multiply(2., tf.matmul(x_data, tf.trans
 pred_kernel = tf.exp(tf.multiply(gamma, tf.abs(pred_sq_dist)))
 
 prediction_output = tf.matmul(tf.multiply(y_target, b), pred_kernel)
+# tf.argmax()：返回矩阵中最大数据所在的下标argmax([0,1,2] -->[2]; argmax([[0,1,2],[0,1,0])-->[2,1]
 prediction = tf.argmax(prediction_output - tf.expand_dims(tf.reduce_mean(prediction_output, 1), 1), 0)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(prediction, tf.argmax(y_target, 0)), tf.float32))
 

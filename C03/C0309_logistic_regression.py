@@ -48,13 +48,12 @@ sess = tf.Session()
 # birth_data_url = "https://www.umass.edu/statdata/statdata/data/lowbwt.txt"
 # birth_file = requests.get(birth_data_url)
 # birth_data = birth_file.text.split('\r\n')[5:]
-# with open("birthweight_data/birthweight.dat") as f:   # 用于Console模式
-with open("../birthweight_data/birthweight.dat") as f:  # 用于Run模式
+with open("../Data/birthweight_data/birthweight.dat") as f:
     birth_file = f.read()
     pass
 birth_data = birth_file.split('\n')
 birth_header = [x for x in birth_data[0].split('\t') if len(x) >= 1]
-# 下面这个用法很有趣，值得关注
+# Interesting : 下面这个用法很有趣，值得关注
 birth_data = [[float(x) for x in y.split('\t') if len(x) >= 1] for y in birth_data[1:] if len(y) >= 1]
 # Pull out target variable
 y_vals = np.array([x[0] for x in birth_data])

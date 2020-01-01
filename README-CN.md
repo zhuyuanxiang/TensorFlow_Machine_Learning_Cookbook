@@ -15,7 +15,7 @@
         2. 将 “\Tools” 目录下的 “matplotlibrc” 文件拷贝到 “\Lib\site-packages\matplotlib\mpl-data\” 目录下，
         拷贝过程中可以直接覆盖原始文件，也可以将原始文件改名。
 
-
+[作者的原始代码](https://github.com/nfmcclure/tensorflow_cookbook)
 
 # Ch06 神经网络算法
 
